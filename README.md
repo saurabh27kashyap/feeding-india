@@ -8,6 +8,16 @@ MealLedger plans how many meals each centre needs from real attendance, locks th
 
 > Independent portfolio project, inspired by publicly available information about school-meal programs such as Feeding India (FY26 annual report, program pages, blog). It is not affiliated with Feeding India, Zomato or Eternal. Anything not public is marked **ASSUMPTION**.
 
+### See it running
+
+**Kitchen app: Ramesh's van sheet.** Every van route with its dispatch status, late vans, and meals on the road vs confirmed by centres.
+
+![Kitchen partner app: vans and stops for Central Kitchen Varanasi-1](docs/screenshots/kitchen-vans.png)
+
+**Story mode: one school-meal day in 8 steps.** At 10 AM, Saurabh (Ops) checks every centre for unconfirmed deliveries, shortages and late vans.
+
+![Story mode, step 5: the Ops view of route 001 with stop-by-stop delivery status](docs/screenshots/ops-story-mode.png)
+
 ---
 
 ## Contents
