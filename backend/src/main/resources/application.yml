@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: mealledger
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/mealledger}
+    username: ${DB_USER:mealledger}
+    password: ${DB_PASSWORD:mealledger}
+    hikari:
+      maximum-pool-size: 20
+  flyway:
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+  shutdown: graceful
+  servlet:
+    session:
+      timeout: 12h
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+mealledger:
+  # All business times are India time. The database stores UTC.
+  zone: Asia/Kolkata
+  # ASSUMPTION: tomorrow's count locks at 20:00 the evening before,
+  # because central kitchens cook early in the morning.
+  cutoff-time: "20:00"
+  # ASSUMPTION: receipt should be confirmed by these times on the service day.
+  confirm-by-breakfast: "09:30"
+  confirm-by-lunch: "13:30"
+  # ASSUMPTION: vans must leave by these times so hot food arrives on time.
+  dispatch-by-breakfast: "06:30"
+  dispatch-by-lunch: "11:00"
+  # A shortage (a child not fed) is worse than a little waste, so the
+  # suggestion carries a small safety buffer over average attendance.
+  forecast-buffer-percent: 5
+  # A receipt above 120% of the locked count needs a second confirmation (typo guard).
+  large-receipt-percent: 120
+  # ASSUMPTION: centres operate Monday to Saturday.
+  operating-days: MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY
+  frat-api-key: ${FRAT_API_KEY:frat-demo-key}
+  scheduling-enabled: true
+  llm:
+    base-url: ${LLM_BASE_URL:https://api.groq.com/openai/v1}
+    api-key: ${GROQ_API_KEY:}
+    model: ${GROQ_MODEL:openai/gpt-oss-20b}
+    timeout-seconds: 20
+    max-attempts: 3
+
+logging:
+  level:
+    com.mealledger: INFO

@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand: a warm leaf green (food, growth) */
+  --color-brand-50: #ecfdf3;
+  --color-brand-100: #d1fadf;
+  --color-brand-200: #a6f4c5;
+  --color-brand-500: #12b76a;
+  --color-brand-600: #039855;
+  --color-brand-700: #027a48;
+  --color-brand-900: #054f31;
+
+  /* Chart series (single hue) and reserved status colors: always paired with icon + label */
+  --color-series: #2a78d6;
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #e7f6ee 0%, transparent 60%),
+    radial-gradient(900px 400px at 110% 0%, #eef2fb 0%, transparent 55%),
+    #f6f6f3;
+  min-height: 100vh;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Guided story: the element to click glows */
+.tour-on {
+  border-radius: 14px;
+  animation: tourpulse 1.4s ease-in-out infinite;
+}
+@keyframes tourpulse {
+  0%, 100% { box-shadow: 0 0 0 3px #fbbf24, 0 0 0 0 rgba(251, 191, 36, 0.5); }
+  50% { box-shadow: 0 0 0 3px #fbbf24, 0 0 22px 8px rgba(251, 191, 36, 0.45); }
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}

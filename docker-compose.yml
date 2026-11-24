@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: mealledger
+      POSTGRES_USER: mealledger
+      POSTGRES_PASSWORD: mealledger
+    ports:
+      - "5433:5432"   # 5433 on the host, so a local Postgres on 5432 does not clash
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mealledger -d mealledger"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      DB_URL: jdbc:postgresql://db:5432/mealledger
+      DB_USER: mealledger
+      DB_PASSWORD: mealledger
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-20b}
+      FRAT_API_KEY: ${FRAT_API_KEY:-frat-demo-key}
+      JAVA_OPTS: -XX:MaxRAMPercentage=75 -Duser.timezone=UTC
+    ports:
+      - "8080:8080"
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # Load test (not started by default): docker compose --profile loadtest run --rm k6 run /scripts/peak.js
+  k6:
+    image: grafana/k6:latest
+    profiles: ["loadtest"]
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://app:8080
+    volumes:
+      - ./loadtest:/scripts:ro
+
+volumes:
+  pgdata:
